@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ────────────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getRole() == 'admin';
+    }
+
+    function isSeller() {
+      return isSignedIn() && getRole() == 'seller';
+    }
+
+    function isCustomer() {
+      return isSignedIn() && getRole() == 'customer';
+    }
+
+    function isSellerOrAdmin() {
+      return isSeller() || isAdmin();
+    }
+
+    // ─── Users ──────────────────────────────────────────────────────────────
+
+    match /users/{uid} {
+      // Users can read their own profile; admins can read all
+      allow read: if isOwner(uid) || isAdmin();
+
+      // Users can create their own profile on registration
+      allow create: if isOwner(uid) && request.resource.data.role == 'customer';
+
+      // Users can update their own profile (but not change their role)
+      allow update: if isOwner(uid)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.status == resource.data.status;
+
+      // Admins can update any user (to change role, status, etc.)
+      allow update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── Products ────────────────────────────────────────────────────────────
+
+    match /products/{productId} {
+      // Anyone can read active products
+      allow read: if resource.data.isActive == true || isSellerOrAdmin();
+
+      // Sellers can create products (assigned to themselves)
+      allow create: if isSeller()
+        && request.resource.data.sellerId == request.auth.uid;
+
+      // Sellers can update/delete their own products; admins can do all
+      allow update: if (isSeller() && resource.data.sellerId == request.auth.uid)
+        || isAdmin();
+
+      allow delete: if (isSeller() && resource.data.sellerId == request.auth.uid)
+        || isAdmin();
+    }
+
+    // ─── Orders ──────────────────────────────────────────────────────────────
+
+    match /orders/{orderId} {
+      // Customers can read their own orders; sellers can read orders for their store
+      allow read: if (isSignedIn() && resource.data.customerId == request.auth.uid)
+        || (isSeller() && resource.data.sellerId == request.auth.uid)
+        || isAdmin();
+
+      // Signed-in users (customers) can create orders
+      allow create: if isSignedIn()
+        && request.resource.data.customerId == request.auth.uid;
+
+      // Sellers can update order status for their orders; admins can update all
+      allow update: if (isSeller() && resource.data.sellerId == request.auth.uid)
+        || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── Seller Inquiries ─────────────────────────────────────────────────────
+
+    match /sellerInquiries/{inquiryId} {
+      // Anyone can submit an inquiry
+      allow create: if true;
+
+      // Admins can read, update (approve/reject) inquiries
+      allow read, update: if isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── Subscriptions ────────────────────────────────────────────────────────
+
+    match /subscriptions/{planId} {
+      // Active plans are publicly readable
+      allow read: if resource.data.isActive == true || isAdmin();
+
+      // Only admins can create/update/delete plans
+      allow write: if isAdmin();
+    }
+
+    // ─── Limited Drops ────────────────────────────────────────────────────────
+
+    match /limitedDrops/{dropId} {
+      allow read: if true;
+      allow write: if isSellerOrAdmin();
+    }
+  }
+}

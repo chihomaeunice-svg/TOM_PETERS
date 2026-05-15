@@ -1,0 +1,29 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Product images — sellers can upload, everyone can read
+    match /products/{sellerId}/{imageId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == sellerId
+        && request.resource.size < 10 * 1024 * 1024  // 10MB limit
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Product videos — sellers can upload, everyone can read
+    match /videos/{sellerId}/{videoId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == sellerId
+        && request.resource.size < 100 * 1024 * 1024  // 100MB limit
+        && request.resource.contentType.matches('video/.*');
+    }
+
+    // User avatars
+    match /avatars/{uid}/{imageId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
