@@ -3,6 +3,7 @@ import { Package } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../../hooks/useAuth';
 import { getCustomerOrders, Order } from '../../services/firestore';
+import BackButton from '../../components/common/BackButton';
 
 const TIMELINE_STEPS: { status: Order['status']; label: string }[] = [
   { status: 'pending', label: 'Placed' },
@@ -96,6 +97,7 @@ export default function OrderHistory() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
+      <BackButton label="Back" />
       <h1 className="font-display text-3xl text-tp-charcoal mb-8">Order History</h1>
 
       {orders.length === 0 ? (
