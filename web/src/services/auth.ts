@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
   updateProfile,
 } from 'firebase/auth';
 import {
@@ -91,7 +93,17 @@ export const loginUser = async (email: string, password: string) => {
 
 export const logoutUser = () => signOut(auth);
 
-export const resetPassword = (email: string) => sendPasswordResetEmail(auth, email);
+export const resetPassword = (email: string) =>
+  sendPasswordResetEmail(auth, email, {
+    url: `${window.location.origin}/login`,
+    handleCodeInApp: false,
+  });
+
+export const verifyResetCode = (oobCode: string) =>
+  verifyPasswordResetCode(auth, oobCode);
+
+export const confirmReset = (oobCode: string, newPassword: string) =>
+  confirmPasswordReset(auth, oobCode, newPassword);
 
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
   const snap = await getDoc(doc(db, 'users', uid));
