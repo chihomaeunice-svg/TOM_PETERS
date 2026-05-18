@@ -27,7 +27,7 @@ export default function SellerLayout() {
       <aside className="w-64 bg-tp-charcoal text-tp-cream flex flex-col fixed h-full">
         <div className="p-6 border-b border-tp-taupe/20">
           <Link to="/" className="font-display text-lg tracking-[0.12em] uppercase text-tp-gold">
-            TOM PETERS
+            TOMPETERS
           </Link>
           <p className="text-xs text-tp-tan mt-1 tracking-wider uppercase">Seller Hub</p>
         </div>

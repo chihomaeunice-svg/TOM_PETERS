@@ -31,13 +31,13 @@ export default function CustomerLayout() {
           <span className="mx-8">✦</span>
           <span className="mx-8">PREMIUM QUALITY — CURATED COLLECTIONS</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">BECOME A SELLER — SELL WITH TOM PETERS</span>
+          <span className="mx-8">BECOME A SELLER — SELL WITH TOMPETERS</span>
           <span className="mx-8">✦</span>
           <span className="mx-8">FREE SHIPPING ON ORDERS OVER $150</span>
           <span className="mx-8">✦</span>
           <span className="mx-8">PREMIUM QUALITY — CURATED COLLECTIONS</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">BECOME A SELLER — SELL WITH TOM PETERS</span>
+          <span className="mx-8">BECOME A SELLER — SELL WITH TOMPETERS</span>
           <span className="mx-8">✦</span>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function CustomerLayout() {
 
             {/* Logo */}
             <Link to="/" className="font-display text-xl tracking-[0.15em] text-tp-charcoal font-bold uppercase">
-              TOM PETERS
+              TOMPETERS
             </Link>
 
             {/* Desktop nav */}
@@ -152,7 +152,7 @@ export default function CustomerLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2 md:col-span-1">
-              <div className="font-display text-xl tracking-[0.15em] mb-4">TOM PETERS</div>
+              <div className="font-display text-xl tracking-[0.15em] mb-4">TOMPETERS</div>
               <p className="text-sm text-tp-tan leading-relaxed">Premium clothing for those who appreciate quality, craftsmanship, and timeless style.</p>
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function CustomerLayout() {
             </div>
           </div>
           <div className="border-t border-tp-taupe/30 pt-6 text-center text-xs text-tp-taupe">
-            © {new Date().getFullYear()} Tom Peters. All rights reserved.
+            © {new Date().getFullYear()} Tompeters. All rights reserved.
           </div>
         </div>
       </footer>

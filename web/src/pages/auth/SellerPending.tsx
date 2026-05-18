@@ -14,7 +14,7 @@ export default function SellerPending() {
     <div className="min-h-screen bg-tp-cream flex items-center justify-center px-4">
       <div className="max-w-md text-center">
         <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase block mb-10">
-          TOM PETERS
+          TOMPETERS
         </Link>
         <div className="bg-white border border-tp-border rounded p-10 shadow-luxe">
           <div className="text-5xl mb-6">✦</div>

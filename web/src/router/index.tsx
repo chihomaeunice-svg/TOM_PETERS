@@ -40,7 +40,7 @@ import AdminOrders from '../pages/admin/Orders';
 
 function RequireRole({ role, children }: { role: string | string[]; children: JSX.Element }) {
   const { profile, loading } = useAuth();
-  if (loading) return <div className="flex items-center justify-center h-screen bg-tp-cream"><div className="animate-pulse-soft text-tp-gold font-display text-2xl">TOM PETERS</div></div>;
+  if (loading) return <div className="flex items-center justify-center h-screen bg-tp-cream"><div className="animate-pulse-soft text-tp-gold font-display text-2xl">TOMPETERS</div></div>;
   if (!profile) return <Navigate to="/login" replace />;
   if (profile.role === 'seller' && profile.status === 'pending') return <Navigate to="/seller/pending" replace />;
   const allowed = Array.isArray(role) ? role.includes(profile.role) : profile.role === role;

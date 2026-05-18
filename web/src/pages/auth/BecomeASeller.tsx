@@ -30,7 +30,7 @@ export default function BecomeASeller() {
     <div className="min-h-screen bg-tp-cream py-16 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase">TOM PETERS</Link>
+          <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase">TOMPETERS</Link>
           <h1 className="text-2xl font-display mt-6 text-tp-charcoal">Become a Seller</h1>
           <p className="text-tp-taupe mt-3 leading-relaxed max-w-lg mx-auto">
             Join our curated marketplace of premium clothing brands. We review each application carefully to maintain the quality our customers expect.
@@ -80,7 +80,7 @@ export default function BecomeASeller() {
             <div>
               <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-2">Tell Us About Your Brand</label>
               <textarea required rows={5} value={form.description} onChange={e => update('description', e.target.value)}
-                placeholder="Describe your brand, your products, your target audience, and why you'd be a great fit for Tom Peters…"
+                placeholder="Describe your brand, your products, your target audience, and why you'd be a great fit for Tompeters…"
                 className="w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream resize-none" />
             </div>
 
