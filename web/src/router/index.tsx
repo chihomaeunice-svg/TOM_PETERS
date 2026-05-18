@@ -18,10 +18,9 @@ import Shop from '../pages/customer/Shop';
 import ProductDetail from '../pages/customer/ProductDetail';
 import Cart from '../pages/customer/Cart';
 import Checkout from '../pages/customer/Checkout';
-import LimitedDrops from '../pages/customer/LimitedDrops';
-import MembersOnly from '../pages/customer/MembersOnly';
 import Profile from '../pages/customer/Profile';
 import OrderHistory from '../pages/customer/OrderHistory';
+import Wishlist from '../pages/customer/Wishlist';
 
 // Seller pages
 import SellerDashboard from '../pages/seller/Dashboard';
@@ -29,6 +28,7 @@ import SellerProducts from '../pages/seller/Products';
 import AddProduct from '../pages/seller/AddProduct';
 import EditProduct from '../pages/seller/EditProduct';
 import SellerOrders from '../pages/seller/Orders';
+import SellerAccount from '../pages/seller/Account';
 
 // Admin pages
 import AdminDashboard from '../pages/admin/Dashboard';
@@ -59,12 +59,11 @@ export default function AppRouter() {
         <Route index element={<Home />} />
         <Route path="shop" element={<Shop />} />
         <Route path="shop/:id" element={<ProductDetail />} />
-        <Route path="limited-drops" element={<LimitedDrops />} />
         <Route path="cart" element={<Cart />} />
         <Route path="checkout" element={<RequireRole role={['customer', 'seller', 'admin']}><Checkout /></RequireRole>} />
-        <Route path="members" element={<RequireRole role={['customer', 'seller', 'admin']}><MembersOnly /></RequireRole>} />
         <Route path="profile" element={<RequireRole role={['customer', 'seller', 'admin']}><Profile /></RequireRole>} />
         <Route path="orders" element={<RequireRole role={['customer', 'seller', 'admin']}><OrderHistory /></RequireRole>} />
+        <Route path="wishlist" element={<Wishlist />} />
       </Route>
 
       {/* Seller routes */}
@@ -74,6 +73,7 @@ export default function AppRouter() {
         <Route path="products/new" element={<AddProduct />} />
         <Route path="products/:id/edit" element={<EditProduct />} />
         <Route path="orders" element={<SellerOrders />} />
+        <Route path="account" element={<SellerAccount />} />
       </Route>
 
       {/* Admin routes */}

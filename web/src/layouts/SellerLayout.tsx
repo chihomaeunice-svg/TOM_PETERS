@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, User, LogOut, Eye } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { logoutUser } from '../services/auth';
 
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/seller', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { to: '/seller/products', label: 'Products', icon: Package },
   { to: '/seller/orders', label: 'Orders', icon: ShoppingCart },
+  { to: '/seller/account', label: 'Account', icon: User },
 ];
 
 export default function SellerLayout() {
@@ -54,8 +55,11 @@ export default function SellerLayout() {
         </nav>
 
         <div className="p-4 border-t border-tp-taupe/20 space-y-2">
-          <Link to="/" className="flex items-center gap-3 px-4 py-2 text-sm text-tp-tan hover:text-tp-cream transition-colors">
-            <ChevronRight size={16} /> View Store
+          <Link
+            to={`/shop?seller=${profile?.uid}`}
+            className="flex items-center gap-3 px-4 py-2 text-sm text-tp-tan hover:text-tp-cream transition-colors"
+          >
+            <Eye size={16} /> Preview Store
           </Link>
           <div className="px-4 py-2">
             <p className="text-xs text-tp-taupe">{profile?.displayName}</p>

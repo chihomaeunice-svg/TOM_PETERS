@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { getSellerInquiries, updateInquiryStatus, SellerInquiry } from '../../services/firestore';
+import { getSellerInquiries, updateInquiryStatus, SellerInquiry, getSellerProducts, getSellerOrders } from '../../services/firestore';
 import { UserProfile } from '../../services/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { COLLECTIONS } from '../../utils/collections';
-import { CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, ShieldOff, ShieldCheck } from 'lucide-react';
+
+interface SellerWithStats extends UserProfile {
+  productCount: number;
+  totalRevenue: number;
+  commissionEarned: number;
+}
 
 export default function AdminSellers() {
   const { profile } = useAuth();
-  const [sellers, setSellers] = useState<UserProfile[]>([]);
+  const [sellers, setSellers] = useState<SellerWithStats[]>([]);
   const [inquiries, setInquiries] = useState<SellerInquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'sellers' | 'applications'>('sellers');
@@ -21,7 +27,27 @@ export default function AdminSellers() {
       getDocs(query(collection(db, COLLECTIONS.USERS), where('role', '==', 'seller'))),
       getSellerInquiries(),
     ]);
-    setSellers(sellersSnap.docs.map(d => d.data() as UserProfile));
+
+    const sellerProfiles = sellersSnap.docs.map(d => d.data() as UserProfile);
+
+    // Fetch products and orders for each seller
+    const sellersWithStats = await Promise.all(
+      sellerProfiles.map(async s => {
+        const [products, orders] = await Promise.all([
+          getSellerProducts(s.uid),
+          getSellerOrders(s.uid),
+        ]);
+        const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+        return {
+          ...s,
+          productCount: products.length,
+          totalRevenue,
+          commissionEarned: totalRevenue * 0.05,
+        };
+      })
+    );
+
+    setSellers(sellersWithStats);
     setInquiries(inqs);
     setLoading(false);
   };
@@ -36,6 +62,13 @@ export default function AdminSellers() {
     load();
   };
 
+  const handleSellerStatus = async (uid: string, newStatus: 'active' | 'suspended') => {
+    setUpdating(uid);
+    await updateDoc(doc(db, COLLECTIONS.USERS, uid), { status: newStatus });
+    setUpdating(null);
+    load();
+  };
+
   return (
     <div>
       <h1 className="font-display text-3xl text-tp-charcoal mb-8">Sellers Management</h1>
@@ -46,7 +79,9 @@ export default function AdminSellers() {
             className={`px-5 py-2 text-sm tracking-wider uppercase rounded transition-colors ${
               tab === t ? 'bg-tp-charcoal text-white' : 'border border-tp-border text-tp-taupe hover:border-tp-gold'
             }`}>
-            {t === 'sellers' ? `Sellers (${sellers.length})` : `Applications (${inquiries.filter(i => i.status === 'pending').length})`}
+            {t === 'sellers'
+              ? `Active Sellers (${sellers.length})`
+              : `Applications (${inquiries.filter(i => i.status === 'pending').length})`}
           </button>
         ))}
       </div>
@@ -58,32 +93,55 @@ export default function AdminSellers() {
           {sellers.length === 0 ? (
             <div className="text-center py-16 text-tp-taupe">No sellers yet.</div>
           ) : (
-            <table className="w-full text-sm">
-              <thead className="bg-tp-silk border-b border-tp-border">
-                <tr>
-                  {['Name', 'Email', 'Business', 'Status', 'Plan'].map(h => (
-                    <th key={h} className="text-left px-4 py-3 text-xs tracking-widest uppercase text-tp-taupe">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-tp-border">
-                {sellers.map(s => (
-                  <tr key={s.uid} className="hover:bg-tp-silk/30 transition-colors">
-                    <td className="px-4 py-3 text-tp-charcoal">{s.displayName}</td>
-                    <td className="px-4 py-3 text-tp-taupe">{s.email}</td>
-                    <td className="px-4 py-3 text-tp-taupe">{s.businessName || '—'}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded-full capitalize ${
-                        s.status === 'active' ? 'bg-tp-success/10 text-tp-success' :
-                        s.status === 'suspended' ? 'bg-tp-error/10 text-tp-error' :
-                        'bg-tp-taupe/10 text-tp-taupe'
-                      }`}>{s.status}</span>
-                    </td>
-                    <td className="px-4 py-3 text-tp-taupe capitalize">{s.subscriptionPlan || 'Basic'}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-tp-silk border-b border-tp-border">
+                  <tr>
+                    {['Name', 'Email', 'Business', 'Products', 'Revenue', 'Commission (5%)', 'Status', 'Actions'].map(h => (
+                      <th key={h} className="text-left px-4 py-3 text-xs tracking-widest uppercase text-tp-taupe whitespace-nowrap">{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-tp-border">
+                  {sellers.map(s => (
+                    <tr key={s.uid} className="hover:bg-tp-silk/30 transition-colors">
+                      <td className="px-4 py-3 text-tp-charcoal font-medium">{s.displayName}</td>
+                      <td className="px-4 py-3 text-tp-taupe">{s.email}</td>
+                      <td className="px-4 py-3 text-tp-taupe">{s.businessName || '—'}</td>
+                      <td className="px-4 py-3 text-tp-charcoal text-center">{s.productCount}</td>
+                      <td className="px-4 py-3 text-tp-success font-medium">${s.totalRevenue.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-tp-gold-dark">${s.commissionEarned.toFixed(2)}</td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs px-2 py-1 rounded-full capitalize ${
+                          s.status === 'active' ? 'bg-tp-success/10 text-tp-success' :
+                          s.status === 'suspended' ? 'bg-tp-error/10 text-tp-error' :
+                          'bg-tp-taupe/10 text-tp-taupe'
+                        }`}>{s.status}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        {s.status === 'active' ? (
+                          <button
+                            disabled={updating === s.uid}
+                            onClick={() => handleSellerStatus(s.uid, 'suspended')}
+                            className="flex items-center gap-1 px-3 py-1.5 text-xs tracking-wider uppercase bg-tp-error/10 text-tp-error border border-tp-error/20 rounded hover:bg-tp-error hover:text-white transition-colors disabled:opacity-50 whitespace-nowrap"
+                          >
+                            <ShieldOff size={12} /> Suspend
+                          </button>
+                        ) : (
+                          <button
+                            disabled={updating === s.uid}
+                            onClick={() => handleSellerStatus(s.uid, 'active')}
+                            className="flex items-center gap-1 px-3 py-1.5 text-xs tracking-wider uppercase bg-tp-success/10 text-tp-success border border-tp-success/20 rounded hover:bg-tp-success hover:text-white transition-colors disabled:opacity-50 whitespace-nowrap"
+                          >
+                            <ShieldCheck size={12} /> Activate
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       ) : (
@@ -93,9 +151,11 @@ export default function AdminSellers() {
             <div key={inq.id} className="bg-white border border-tp-border rounded p-6 shadow-luxe">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-medium text-tp-charcoal">{inq.name}</h3>
-                  <p className="text-sm text-tp-taupe">{inq.email} · {inq.phone}</p>
-                  <p className="text-sm text-tp-gold mt-1">{inq.businessName} <span className="text-tp-taupe">({inq.businessType})</span></p>
+                  <h3 className="font-medium text-tp-charcoal text-lg">{inq.name}</h3>
+                  <p className="text-sm text-tp-taupe mt-0.5">{inq.email} · {inq.phone}</p>
+                  <p className="text-sm text-tp-gold mt-1 font-medium">{inq.businessName}
+                    <span className="text-tp-taupe font-normal ml-1">({inq.businessType})</span>
+                  </p>
                 </div>
                 <span className={`flex items-center gap-1 text-xs px-3 py-1 rounded-full ${
                   inq.status === 'approved' ? 'bg-tp-success/10 text-tp-success' :
@@ -107,7 +167,35 @@ export default function AdminSellers() {
                 </span>
               </div>
 
-              <p className="text-sm text-tp-taupe leading-relaxed mb-4 line-clamp-3">{inq.description}</p>
+              <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                <div>
+                  <span className="text-xs tracking-widest uppercase text-tp-taupe">Business Name</span>
+                  <p className="text-tp-charcoal mt-1">{inq.businessName}</p>
+                </div>
+                <div>
+                  <span className="text-xs tracking-widest uppercase text-tp-taupe">Business Type</span>
+                  <p className="text-tp-charcoal mt-1">{inq.businessType}</p>
+                </div>
+                <div>
+                  <span className="text-xs tracking-widest uppercase text-tp-taupe">Contact</span>
+                  <p className="text-tp-charcoal mt-1">{inq.phone}</p>
+                </div>
+                <div>
+                  <span className="text-xs tracking-widest uppercase text-tp-taupe">Email</span>
+                  <p className="text-tp-charcoal mt-1">{inq.email}</p>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <span className="text-xs tracking-widest uppercase text-tp-taupe">Description</span>
+                <p className="text-sm text-tp-taupe leading-relaxed mt-1">{inq.description}</p>
+              </div>
+
+              {inq.submittedAt?.toDate && (
+                <p className="text-xs text-tp-taupe mb-4">
+                  Submitted: {inq.submittedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </p>
+              )}
 
               {inq.status === 'pending' && (
                 <div className="flex gap-2">

@@ -1,23 +1,32 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useAuth } from '../../hooks/useAuth';
 import { addProduct } from '../../services/firestore';
-import { ChevronLeft, Plus, X } from 'lucide-react';
+import { storage } from '../../config/firebase';
+import { ChevronLeft, ImagePlus, X, Loader2 } from 'lucide-react';
 
 const CATEGORIES = ['Outerwear', 'Knitwear', 'Shirts', 'Trousers', 'Accessories', 'Other'];
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
+interface UploadedImage {
+  preview: string;
+  url: string;
+  uploading: boolean;
+  error?: string;
+}
+
 export default function AddProduct() {
   const { profile } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [sizes, setSizes] = useState<Record<string, number>>({});
-  const [imageUrls, setImageUrls] = useState<string[]>(['']);
-  const [isLimitedDrop, setIsLimitedDrop] = useState(false);
+  const [images, setImages] = useState<UploadedImage[]>([]);
   const [tags, setTags] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,27 +35,70 @@ export default function AddProduct() {
     setSizes(s => qty > 0 ? { ...s, [size]: qty } : Object.fromEntries(Object.entries(s).filter(([k]) => k !== size)));
   };
 
-  const updateImageUrl = (i: number, val: string) => {
-    setImageUrls(urls => { const next = [...urls]; next[i] = val; return next; });
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!profile || !e.target.files) return;
+    const files = Array.from(e.target.files).slice(0, 5 - images.length);
+
+    const newImages: UploadedImage[] = files.map(f => ({
+      preview: URL.createObjectURL(f),
+      url: '',
+      uploading: true,
+    }));
+
+    setImages(prev => [...prev, ...newImages]);
+
+    await Promise.all(files.map(async (file, i) => {
+      try {
+        const storageRef = ref(storage, `products/${profile.uid}/${Date.now()}-${file.name}`);
+        const task = uploadBytesResumable(storageRef, file);
+        await new Promise<void>((resolve, reject) => task.on('state_changed', null, reject, resolve));
+        const url = await getDownloadURL(task.snapshot.ref);
+        setImages(prev => {
+          const next = [...prev];
+          const idx = prev.length - files.length + i;
+          next[idx] = { ...next[idx], url, uploading: false };
+          return next;
+        });
+      } catch {
+        setImages(prev => {
+          const next = [...prev];
+          const idx = prev.length - files.length + i;
+          next[idx] = { ...next[idx], uploading: false, error: 'Upload failed' };
+          return next;
+        });
+      }
+    }));
+
+    e.target.value = '';
+  };
+
+  const removeImage = (i: number) => {
+    setImages(prev => {
+      URL.revokeObjectURL(prev[i].preview);
+      return prev.filter((_, j) => j !== i);
+    });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!profile) return;
+    if (images.some(img => img.uploading)) {
+      setError('Please wait for all images to finish uploading.');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      const validImages = imageUrls.filter(u => u.trim() !== '');
       await addProduct({
         name,
         description,
         price: parseFloat(price),
         category,
         sizes,
-        images: validImages,
+        images: images.filter(img => img.url).map(img => img.url),
         sellerId: profile.uid,
         sellerName: profile.displayName,
-        isLimitedDrop,
+        isLimitedDrop: false,
         isActive: true,
         tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       });
@@ -76,7 +128,7 @@ export default function AddProduct() {
         </div>
 
         <div>
-          <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-2">Description</label>
+          <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-2">Description</label>
           <textarea required rows={4} value={description} onChange={e => setDescription(e.target.value)}
             className="w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream resize-none"
             placeholder="Describe the product, materials, fit…" />
@@ -84,13 +136,13 @@ export default function AddProduct() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-2">Price (USD)</label>
+            <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-2">Price (USD)</label>
             <input required type="number" min="0" step="0.01" value={price} onChange={e => setPrice(e.target.value)}
               className="w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream"
               placeholder="299.00" />
           </div>
           <div>
-            <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-2">Category</label>
+            <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-2">Category</label>
             <select required value={category} onChange={e => setCategory(e.target.value)}
               className="w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream">
               <option value="">Select…</option>
@@ -100,7 +152,7 @@ export default function AddProduct() {
         </div>
 
         <div>
-          <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-3">Sizes & Stock</label>
+          <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-3">Sizes & Stock</label>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
             {SIZES.map(size => (
               <div key={size}>
@@ -113,44 +165,55 @@ export default function AddProduct() {
           </div>
         </div>
 
+        {/* Image upload */}
         <div>
-          <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-3">Image URLs</label>
-          {imageUrls.map((url, i) => (
-            <div key={i} className="flex gap-2 mb-2">
-              <input value={url} onChange={e => updateImageUrl(i, e.target.value)}
-                className="flex-1 border border-tp-border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream"
-                placeholder="https://…" />
-              {imageUrls.length > 1 && (
-                <button type="button" onClick={() => setImageUrls(urls => urls.filter((_, j) => j !== i))}
-                  className="p-2.5 text-tp-taupe hover:text-tp-error transition-colors border border-tp-border rounded">
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-          ))}
-          {imageUrls.length < 5 && (
-            <button type="button" onClick={() => setImageUrls(u => [...u, ''])}
-              className="flex items-center gap-2 text-sm text-tp-taupe hover:text-tp-gold transition-colors mt-1">
-              <Plus size={14} /> Add Image URL
-            </button>
-          )}
+          <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-3">Product Images (up to 5)</label>
+          <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileSelect} />
+
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-3">
+            {images.map((img, i) => (
+              <div key={i} className="relative aspect-square bg-tp-silk rounded overflow-hidden border border-tp-border">
+                <img src={img.preview} alt="" className="w-full h-full object-cover" />
+                {img.uploading && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <Loader2 size={18} className="text-white animate-spin" />
+                  </div>
+                )}
+                {img.error && (
+                  <div className="absolute inset-0 bg-tp-error/20 flex items-center justify-center">
+                    <span className="text-xs text-tp-error text-center px-1">{img.error}</span>
+                  </div>
+                )}
+                {!img.uploading && (
+                  <button type="button" onClick={() => removeImage(i)}
+                    className="absolute top-1 right-1 w-5 h-5 bg-tp-charcoal/80 rounded-full flex items-center justify-center text-white hover:bg-tp-error transition-colors">
+                    <X size={10} />
+                  </button>
+                )}
+              </div>
+            ))}
+
+            {images.length < 5 && (
+              <button type="button" onClick={() => fileInputRef.current?.click()}
+                className="aspect-square border-2 border-dashed border-tp-border rounded flex flex-col items-center justify-center gap-1 text-tp-taupe hover:border-tp-gold hover:text-tp-gold transition-colors">
+                <ImagePlus size={20} />
+                <span className="text-xs">Add</span>
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-tp-taupe">Images upload directly to secure storage. Max 10MB each.</p>
         </div>
 
         <div>
-          <label className="block text-xs tracking-widest uppercase text-tp-taupe mb-2">Tags (comma-separated)</label>
+          <label className="block text-xs tracking-widests uppercase text-tp-taupe mb-2">Tags (comma-separated)</label>
           <input value={tags} onChange={e => setTags(e.target.value)}
             className="w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream"
             placeholder="luxury, cashmere, winter" />
         </div>
 
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" checked={isLimitedDrop} onChange={e => setIsLimitedDrop(e.target.checked)}
-            className="w-4 h-4 accent-tp-gold" />
-          <span className="text-sm text-tp-charcoal">Mark as Limited Drop</span>
-        </label>
-
-        <button type="submit" disabled={loading}
-          className="w-full bg-tp-charcoal text-tp-cream py-3 text-sm tracking-widest uppercase hover:opacity-80 transition-opacity disabled:opacity-60">
+        <button type="submit" disabled={loading || images.some(img => img.uploading)}
+          className="w-full bg-tp-charcoal text-tp-cream py-3 text-sm tracking-widests uppercase hover:opacity-80 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+          {loading && <Loader2 size={16} className="animate-spin" />}
           {loading ? 'Adding…' : 'Add Product'}
         </button>
       </form>

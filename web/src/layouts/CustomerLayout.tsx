@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, Menu, X, Crown, Zap } from 'lucide-react';
+import { ShoppingBag, User, Menu, X, Heart } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useCart } from '../hooks/useCart';
@@ -19,8 +19,7 @@ export default function CustomerLayout() {
 
   const navLinks = [
     { to: '/shop', label: 'Shop' },
-    { to: '/limited-drops', label: 'Limited Drops' },
-    { to: '/members', label: 'Members Only' },
+    { to: '/wishlist', label: 'Saved' },
   ];
 
   return (
@@ -30,15 +29,15 @@ export default function CustomerLayout() {
         <div className="inline-flex animate-marquee whitespace-nowrap">
           <span className="mx-8">FREE SHIPPING ON ORDERS OVER $150</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">EXCLUSIVE LIMITED DROPS — DON'T MISS OUT</span>
+          <span className="mx-8">PREMIUM QUALITY — CURATED COLLECTIONS</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">JOIN THE MEMBERS PROGRAM FOR EARLY ACCESS</span>
+          <span className="mx-8">BECOME A SELLER — SELL WITH TOM PETERS</span>
           <span className="mx-8">✦</span>
           <span className="mx-8">FREE SHIPPING ON ORDERS OVER $150</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">EXCLUSIVE LIMITED DROPS — DON'T MISS OUT</span>
+          <span className="mx-8">PREMIUM QUALITY — CURATED COLLECTIONS</span>
           <span className="mx-8">✦</span>
-          <span className="mx-8">JOIN THE MEMBERS PROGRAM FOR EARLY ACCESS</span>
+          <span className="mx-8">BECOME A SELLER — SELL WITH TOM PETERS</span>
           <span className="mx-8">✦</span>
         </div>
       </div>
@@ -96,11 +95,9 @@ export default function CustomerLayout() {
                   <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-tp-border shadow-luxe rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
                     <Link to="/profile" className="block px-4 py-3 text-sm text-tp-charcoal hover:bg-tp-silk transition-colors">My Profile</Link>
                     <Link to="/orders" className="block px-4 py-3 text-sm text-tp-charcoal hover:bg-tp-silk transition-colors">My Orders</Link>
-                    {profile.isMember && (
-                      <Link to="/members" className="flex items-center gap-2 px-4 py-3 text-sm text-tp-gold hover:bg-tp-silk transition-colors">
-                        <Crown size={14} /> Members Area
-                      </Link>
-                    )}
+                    <Link to="/wishlist" className="flex items-center gap-2 px-4 py-3 text-sm text-tp-charcoal hover:bg-tp-silk transition-colors">
+                      <Heart size={14} /> Saved Items
+                    </Link>
                     <hr className="border-tp-border" />
                     <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-sm text-tp-error hover:bg-tp-silk transition-colors">
                       Sign Out
@@ -162,8 +159,8 @@ export default function CustomerLayout() {
               <h4 className="text-xs tracking-widest uppercase mb-4 text-tp-tan">Shop</h4>
               <div className="space-y-2 text-sm">
                 <Link to="/shop" className="block text-tp-beige hover:text-tp-gold transition-colors">All Products</Link>
-                <Link to="/limited-drops" className="block text-tp-beige hover:text-tp-gold transition-colors">Limited Drops</Link>
-                <Link to="/members" className="block text-tp-beige hover:text-tp-gold transition-colors">Members Only</Link>
+                <Link to="/wishlist" className="block text-tp-beige hover:text-tp-gold transition-colors">Saved Items</Link>
+                <Link to="/become-a-seller" className="block text-tp-beige hover:text-tp-gold transition-colors">Sell With Us</Link>
               </div>
             </div>
             <div>

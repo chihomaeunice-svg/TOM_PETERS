@@ -28,15 +28,24 @@ export default function SellerProducts() {
     load();
   };
 
+  const activeCount = products.filter(p => p.isActive).length;
+  const hiddenCount = products.length - activeCount;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="font-display text-3xl text-tp-charcoal">Products</h1>
         <Link to="/seller/products/new"
           className="flex items-center gap-2 bg-tp-charcoal text-tp-cream px-5 py-2.5 text-sm tracking-wider uppercase hover:opacity-80 transition-opacity">
           <Plus size={16} /> Add Product
         </Link>
       </div>
+      {products.length > 0 && (
+        <p className="text-sm text-tp-taupe mb-6">
+          <span className="text-tp-success font-medium">{activeCount} active</span>
+          {hiddenCount > 0 && <span className="ml-2 text-tp-taupe">{hiddenCount} hidden</span>}
+        </p>
+      )}
 
       {loading ? (
         <div className="space-y-3">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="animate-pulse bg-white rounded h-20" />)}</div>
@@ -69,7 +78,6 @@ export default function SellerProducts() {
                       </div>
                       <div>
                         <p className="font-medium text-tp-charcoal">{p.name}</p>
-                        {p.isLimitedDrop && <span className="text-xs text-tp-gold">Limited Drop</span>}
                       </div>
                     </div>
                   </td>
