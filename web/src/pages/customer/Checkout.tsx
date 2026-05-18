@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
 import { createOrder } from '../../services/firestore';
+import { emailOrderConfirmation } from '../../services/email';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function Checkout() {
@@ -46,6 +47,13 @@ export default function Checkout() {
       });
       clearCart();
       setDone(true);
+      emailOrderConfirmation({
+        to: profile.email,
+        customerName: profile.displayName,
+        orderId: Date.now().toString(),
+        items: items.map(i => ({ name: i.name, size: i.size, qty: i.qty, price: i.price })),
+        total,
+      });
     } catch (err: any) {
       setError(err.message || 'Failed to place order. Please try again.');
     } finally {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { getSellerInquiries, updateInquiryStatus, SellerInquiry, getSellerProducts, getSellerOrders } from '../../services/firestore';
+import { emailApplicationDecision } from '../../services/email';
 import { UserProfile } from '../../services/auth';
 import { useAuth } from '../../hooks/useAuth';
 import { COLLECTIONS } from '../../utils/collections';
@@ -61,7 +62,16 @@ export default function AdminSellers() {
   const handleInquiry = async (id: string, status: 'approved' | 'rejected') => {
     if (!profile) return;
     setUpdating(id);
+    const inq = inquiries.find(i => i.id === id);
     await updateInquiryStatus(id, status, profile.uid);
+    if (inq) {
+      await emailApplicationDecision({
+        to: inq.email,
+        name: inq.name,
+        businessName: inq.businessName,
+        decision: status,
+      });
+    }
     setUpdating(null);
     load();
   };
