@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-tp-cream text-tp-charcoal font-sans;
+    background-image:
+      radial-gradient(at 10% 0%, rgba(201, 169, 110, 0.06) 0px, transparent 50%),
+      radial-gradient(at 90% 100%, rgba(140, 123, 107, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-tp-gold/30 text-tp-charcoal;
+  }
+}
+
+@layer components {
+  .label-caps {
+    @apply uppercase tracking-widest text-xs font-medium;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-tp-border shadow-sm;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-tp-border rounded-full;
+  }
+}
