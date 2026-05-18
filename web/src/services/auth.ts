@@ -35,6 +35,29 @@ export interface UserProfile {
   subscriptionPlan?: string;
 }
 
+export const registerSeller = async (
+  email: string,
+  password: string,
+  displayName: string,
+  businessName: string
+): Promise<UserProfile> => {
+  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(credential.user, { displayName });
+
+  const profile: UserProfile = {
+    uid: credential.user.uid,
+    email,
+    displayName,
+    role: 'seller',
+    status: 'pending',
+    createdAt: serverTimestamp(),
+    businessName,
+  };
+
+  await setDoc(doc(db, 'users', credential.user.uid), profile);
+  return profile;
+};
+
 export const registerCustomer = async (
   email: string,
   password: string,
@@ -63,7 +86,6 @@ export const loginUser = async (email: string, password: string) => {
   if (!snap.exists()) throw new Error('User profile not found.');
   const profile = snap.data() as UserProfile;
   if (profile.status === 'suspended') throw new Error('Account suspended. Contact support.');
-  if (profile.status === 'pending') throw new Error('Account pending approval.');
   return profile;
 };
 

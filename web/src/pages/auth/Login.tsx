@@ -17,6 +17,7 @@ export default function Login() {
     try {
       const profile = await loginUser(email, password);
       if (profile.role === 'admin') navigate('/admin');
+      else if (profile.role === 'seller' && profile.status === 'pending') navigate('/seller/pending');
       else if (profile.role === 'seller') navigate('/seller');
       else navigate('/');
     } catch (err: any) {
@@ -91,6 +92,12 @@ export default function Login() {
             No account?{' '}
             <Link to="/register" className="text-tp-gold hover:underline">
               Create one
+            </Link>
+          </p>
+          <p className="text-center text-sm text-tp-taupe">
+            Selling with us?{' '}
+            <Link to="/seller/register" className="text-tp-gold hover:underline">
+              Register as a seller
             </Link>
           </p>
         </motion.form>
