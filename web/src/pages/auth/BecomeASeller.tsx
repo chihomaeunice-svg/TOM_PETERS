@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { submitSellerInquiry } from '../../services/auth';
+import { emailNewInquiry } from '../../services/email';
 
 const BUSINESS_TYPES = ['Clothing Brand', 'Independent Designer', 'Boutique', 'Manufacturer', 'Other'];
 
@@ -18,6 +19,7 @@ export default function BecomeASeller() {
     setLoading(true);
     try {
       await submitSellerInquiry(form as any);
+      await emailNewInquiry(form as any);
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || 'Submission failed. Please try again.');

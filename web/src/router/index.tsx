@@ -13,6 +13,7 @@ import ForgotPassword from '../pages/auth/ForgotPassword';
 import BecomeASeller from '../pages/auth/BecomeASeller';
 import SellerRegister from '../pages/auth/SellerRegister';
 import SellerPending from '../pages/auth/SellerPending';
+import ResetPassword from '../pages/auth/ResetPassword';
 
 // Customer pages
 import Home from '../pages/customer/Home';
@@ -58,6 +59,7 @@ export default function AppRouter() {
       <Route path="/become-a-seller" element={<BecomeASeller />} />
       <Route path="/seller/register" element={<SellerRegister />} />
       <Route path="/seller/pending" element={<SellerPending />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Customer routes */}
       <Route path="/" element={<CustomerLayout />}>
