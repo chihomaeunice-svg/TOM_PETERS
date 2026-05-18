@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight, Star, Shield, Sparkles, Store } from 'lucide-react';
+import { GLSLHills } from '@/components/ui/glsl-hills';
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -13,8 +14,12 @@ export default function Home() {
     <div>
       {/* Hero */}
       <section className="relative bg-tp-charcoal text-tp-cream min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-tp-charcoal via-tp-charcoal to-tp-taupe/40" />
-        <div className="relative text-center px-4 max-w-3xl mx-auto">
+        {/* Animated GLSL hills background */}
+        <div className="absolute inset-0 z-0 opacity-60">
+          <GLSLHills width="100%" height="100%" cameraZ={125} planeSize={256} speed={0.5} />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-tp-charcoal/60 via-tp-charcoal/40 to-tp-charcoal/80 z-[1]" />
+        <div className="relative z-[2] text-center px-4 max-w-3xl mx-auto">
           <motion.p {...fadeUp(0)} className="text-xs tracking-[0.3em] text-tp-gold uppercase mb-6">
             Premium Collection
           </motion.p>
