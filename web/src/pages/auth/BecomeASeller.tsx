@@ -41,8 +41,12 @@ export default function BecomeASeller() {
           <div className="bg-white border border-tp-border rounded p-10 shadow-luxe text-center">
             <div className="text-5xl mb-4">✦</div>
             <h2 className="font-display text-xl text-tp-charcoal mb-3">Application Received</h2>
-            <p className="text-tp-taupe text-sm leading-relaxed">Thank you for your interest. Our team will review your application and reach out within 3–5 business days.</p>
-            <Link to="/" className="inline-block mt-6 text-sm text-tp-gold hover:underline">Return to Store</Link>
+            <p className="text-tp-taupe text-sm leading-relaxed mb-4">Thank you for your interest. Our team will review your application and reach out within 3–5 business days.</p>
+            <p className="text-tp-taupe text-sm leading-relaxed mb-6">Ready to set up your account now? Create your seller account and it will be activated once approved.</p>
+            <Link to="/seller/register" className="inline-block w-full bg-tp-charcoal text-tp-cream py-3 text-sm tracking-widest uppercase text-center hover:opacity-80 transition-opacity mb-3">
+              Create Seller Account
+            </Link>
+            <Link to="/" className="inline-block text-sm text-tp-taupe hover:text-tp-gold transition-colors">Return to Store</Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="bg-white border border-tp-border rounded p-8 shadow-luxe space-y-5">

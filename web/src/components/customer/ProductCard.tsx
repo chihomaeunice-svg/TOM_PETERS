@@ -12,7 +12,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
 
   return (
     <Link
-      to={`/shop/product/${product.id}`}
+      to={`/shop/${product.id}`}
       className="group block card overflow-hidden hover:shadow-luxe transition-all duration-300"
     >
       <div className="relative aspect-[3/4] bg-tp-silk overflow-hidden">

@@ -37,19 +37,22 @@ export interface Product {
 export const getProducts = async (filterCategory?: string): Promise<Product[]> => {
   let q = query(
     collection(db, COLLECTIONS.PRODUCTS),
-    where('isActive', '==', true),
-    orderBy('createdAt', 'desc')
+    where('isActive', '==', true)
   );
   if (filterCategory) {
     q = query(
       collection(db, COLLECTIONS.PRODUCTS),
       where('isActive', '==', true),
-      where('category', '==', filterCategory),
-      orderBy('createdAt', 'desc')
+      where('category', '==', filterCategory)
     );
   }
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+  const products = snap.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+  return products.sort((a, b) => {
+    const aTime = a.createdAt?.toMillis?.() ?? 0;
+    const bTime = b.createdAt?.toMillis?.() ?? 0;
+    return bTime - aTime;
+  });
 };
 
 export const getLimitedDrops = async (): Promise<Product[]> => {
@@ -65,11 +68,15 @@ export const getLimitedDrops = async (): Promise<Product[]> => {
 export const getSellerProducts = async (sellerId: string): Promise<Product[]> => {
   const q = query(
     collection(db, COLLECTIONS.PRODUCTS),
-    where('sellerId', '==', sellerId),
-    orderBy('createdAt', 'desc')
+    where('sellerId', '==', sellerId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+  const products = snap.docs.map(d => ({ id: d.id, ...d.data() } as Product));
+  return products.sort((a, b) => {
+    const aTime = a.createdAt?.toMillis?.() ?? 0;
+    const bTime = b.createdAt?.toMillis?.() ?? 0;
+    return bTime - aTime;
+  });
 };
 
 export const addProduct = async (product: Omit<Product, 'id' | 'createdAt'>) => {
@@ -114,21 +121,29 @@ export const createOrder = async (order: Omit<Order, 'id' | 'createdAt' | 'updat
 export const getCustomerOrders = async (customerId: string): Promise<Order[]> => {
   const q = query(
     collection(db, COLLECTIONS.ORDERS),
-    where('customerId', '==', customerId),
-    orderBy('createdAt', 'desc')
+    where('customerId', '==', customerId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Order));
+  const orders = snap.docs.map(d => ({ id: d.id, ...d.data() } as Order));
+  return orders.sort((a, b) => {
+    const aTime = a.createdAt?.toMillis?.() ?? 0;
+    const bTime = b.createdAt?.toMillis?.() ?? 0;
+    return bTime - aTime;
+  });
 };
 
 export const getSellerOrders = async (sellerId: string): Promise<Order[]> => {
   const q = query(
     collection(db, COLLECTIONS.ORDERS),
-    where('sellerId', '==', sellerId),
-    orderBy('createdAt', 'desc')
+    where('sellerId', '==', sellerId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Order));
+  const orders = snap.docs.map(d => ({ id: d.id, ...d.data() } as Order));
+  return orders.sort((a, b) => {
+    const aTime = a.createdAt?.toMillis?.() ?? 0;
+    const bTime = b.createdAt?.toMillis?.() ?? 0;
+    return bTime - aTime;
+  });
 };
 
 export const getAllOrders = async (): Promise<Order[]> => {
@@ -218,11 +233,15 @@ export interface Review {
 export const getProductReviews = async (productId: string): Promise<Review[]> => {
   const q = query(
     collection(db, 'reviews'),
-    where('productId', '==', productId),
-    orderBy('createdAt', 'desc')
+    where('productId', '==', productId)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
+  const reviews = snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
+  return reviews.sort((a, b) => {
+    const aTime = a.createdAt?.toMillis?.() ?? 0;
+    const bTime = b.createdAt?.toMillis?.() ?? 0;
+    return bTime - aTime;
+  });
 };
 
 export const addProductReview = async (review: Omit<Review, 'id' | 'createdAt'>): Promise<void> => {
@@ -257,28 +276,4 @@ export const getPlatformStats = async () => {
     totalRevenue,
     pendingInquiries: inquiriesSnap.size,
   };
-};
-
-export interface Review {
-  id?: string;
-  productId: string;
-  customerId: string;
-  customerName: string;
-  rating: number;
-  comment: string;
-  createdAt?: any;
-}
-
-export const getProductReviews = async (productId: string): Promise<Review[]> => {
-  const q = query(
-    collection(db, 'reviews'),
-    where('productId', '==', productId),
-    orderBy('createdAt', 'desc')
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
-};
-
-export const addProductReview = async (review: Omit<Review, 'id' | 'createdAt'>): Promise<void> => {
-  await addDoc(collection(db, 'reviews'), { ...review, createdAt: serverTimestamp() });
 };

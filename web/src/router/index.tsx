@@ -11,6 +11,8 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import BecomeASeller from '../pages/auth/BecomeASeller';
+import SellerRegister from '../pages/auth/SellerRegister';
+import SellerPending from '../pages/auth/SellerPending';
 
 // Customer pages
 import Home from '../pages/customer/Home';
@@ -40,6 +42,7 @@ function RequireRole({ role, children }: { role: string | string[]; children: JS
   const { profile, loading } = useAuth();
   if (loading) return <div className="flex items-center justify-center h-screen bg-tp-cream"><div className="animate-pulse-soft text-tp-gold font-display text-2xl">TOM PETERS</div></div>;
   if (!profile) return <Navigate to="/login" replace />;
+  if (profile.role === 'seller' && profile.status === 'pending') return <Navigate to="/seller/pending" replace />;
   const allowed = Array.isArray(role) ? role.includes(profile.role) : profile.role === role;
   if (!allowed) return <Navigate to="/" replace />;
   return children;
@@ -53,6 +56,8 @@ export default function AppRouter() {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/become-a-seller" element={<BecomeASeller />} />
+      <Route path="/seller/register" element={<SellerRegister />} />
+      <Route path="/seller/pending" element={<SellerPending />} />
 
       {/* Customer routes */}
       <Route path="/" element={<CustomerLayout />}>

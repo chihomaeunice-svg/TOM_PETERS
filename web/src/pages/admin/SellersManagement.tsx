@@ -23,33 +23,37 @@ export default function AdminSellers() {
 
   const load = async () => {
     setLoading(true);
-    const [sellersSnap, inqs] = await Promise.all([
-      getDocs(query(collection(db, COLLECTIONS.USERS), where('role', '==', 'seller'))),
-      getSellerInquiries(),
-    ]);
+    try {
+      const [sellersSnap, inqs] = await Promise.all([
+        getDocs(query(collection(db, COLLECTIONS.USERS), where('role', '==', 'seller'))),
+        getSellerInquiries(),
+      ]);
 
-    const sellerProfiles = sellersSnap.docs.map(d => d.data() as UserProfile);
+      const sellerProfiles = sellersSnap.docs.map(d => d.data() as UserProfile);
 
-    // Fetch products and orders for each seller
-    const sellersWithStats = await Promise.all(
-      sellerProfiles.map(async s => {
-        const [products, orders] = await Promise.all([
-          getSellerProducts(s.uid),
-          getSellerOrders(s.uid),
-        ]);
-        const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-        return {
-          ...s,
-          productCount: products.length,
-          totalRevenue,
-          commissionEarned: totalRevenue * 0.05,
-        };
-      })
-    );
+      const sellersWithStats = await Promise.all(
+        sellerProfiles.map(async s => {
+          const [products, orders] = await Promise.all([
+            getSellerProducts(s.uid).catch(() => []),
+            getSellerOrders(s.uid).catch(() => []),
+          ]);
+          const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+          return {
+            ...s,
+            productCount: products.length,
+            totalRevenue,
+            commissionEarned: totalRevenue * 0.05,
+          };
+        })
+      );
 
-    setSellers(sellersWithStats);
-    setInquiries(inqs);
-    setLoading(false);
+      setSellers(sellersWithStats);
+      setInquiries(inqs);
+    } catch (err) {
+      console.error('Failed to load sellers:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);
