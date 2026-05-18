@@ -5,5 +5,20 @@
   },
   "storage": {
     "rules": "firebase/storage.rules"
+  },
+  "hosting": {
+    "site": "tom-peters-64157",
+    "public": "web/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
