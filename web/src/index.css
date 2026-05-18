@@ -28,6 +28,9 @@
 }
 
 @layer components {
+  .tp-input {
+    @apply w-full border border-tp-border rounded px-4 py-3 text-sm focus:outline-none focus:border-tp-gold bg-tp-cream transition-colors;
+  }
   .label-caps {
     @apply uppercase tracking-widest text-xs font-medium;
   }

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useWishlist } from '../../hooks/useWishlist';
+import BackButton from '../../components/common/BackButton';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { Product } from '../../services/firestore';
@@ -33,6 +34,7 @@ export default function Wishlist() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <BackButton label="Continue Shopping" to="/shop" />
       <div className="mb-10">
         <h1 className="font-display text-4xl text-tp-charcoal tracking-wide mb-2">Saved Items</h1>
         <div className="w-12 h-px bg-tp-gold" />
