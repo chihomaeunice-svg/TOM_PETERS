@@ -29,9 +29,6 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {product.isLimitedDrop && (
-            <span className="bg-tp-charcoal text-tp-cream label-caps px-2 py-1 rounded-full">DROP</span>
-          )}
           {lowStock && (
             <span className="bg-tp-warning/90 text-white label-caps px-2 py-1 rounded-full">Low stock</span>
           )}

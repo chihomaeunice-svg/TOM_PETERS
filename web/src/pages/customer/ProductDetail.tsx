@@ -282,16 +282,6 @@ export default function ProductDetail() {
             </motion.button>
           </div>
 
-          {product.isLimitedDrop && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4 bg-tp-gold/10 border border-tp-gold/20 rounded px-4 py-3 text-sm text-tp-gold-dark"
-            >
-              ⚡ Limited Drop — Stock is very limited. Order now.
-            </motion.div>
-          )}
         </motion.div>
       </div>
 

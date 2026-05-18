@@ -150,7 +150,7 @@ export default function Shop() {
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-tp-taupe/30 font-display text-4xl">TP</div>
                   )}
-                  {product.isLimitedDrop && (
+                  {false && (
                     <span className="absolute top-2 left-2 bg-tp-charcoal text-tp-gold text-xs px-2 py-1 tracking-wider uppercase">Limited</span>
                   )}
                 </div>

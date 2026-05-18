@@ -78,7 +78,6 @@ export default function SellerProducts() {
                       </div>
                       <div>
                         <p className="font-medium text-tp-charcoal">{p.name}</p>
-                        {p.isLimitedDrop && <span className="text-xs text-tp-gold">Limited Drop</span>}
                       </div>
                     </div>
                   </td>
