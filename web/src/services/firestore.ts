@@ -258,27 +258,3 @@ export const getPlatformStats = async () => {
     pendingInquiries: inquiriesSnap.size,
   };
 };
-
-export interface Review {
-  id?: string;
-  productId: string;
-  customerId: string;
-  customerName: string;
-  rating: number;
-  comment: string;
-  createdAt?: any;
-}
-
-export const getProductReviews = async (productId: string): Promise<Review[]> => {
-  const q = query(
-    collection(db, 'reviews'),
-    where('productId', '==', productId),
-    orderBy('createdAt', 'desc')
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
-};
-
-export const addProductReview = async (review: Omit<Review, 'id' | 'createdAt'>): Promise<void> => {
-  await addDoc(collection(db, 'reviews'), { ...review, createdAt: serverTimestamp() });
-};
