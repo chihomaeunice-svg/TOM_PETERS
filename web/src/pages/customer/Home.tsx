@@ -86,7 +86,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-10 md:p-14 flex flex-col justify-center">
               <Store size={32} className="text-tp-gold mb-6" />
-              <h2 className="font-display text-3xl text-tp-charcoal mb-4">Sell With Tom Peters</h2>
+              <h2 className="font-display text-3xl text-tp-charcoal mb-4">Sell With Tompeters</h2>
               <p className="text-tp-taupe leading-relaxed mb-8">
                 We curate only the best. If your brand meets our standards, we would love to have you. Submit an inquiry and our team will review your application within 3 to 5 business days.
               </p>

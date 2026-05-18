@@ -33,7 +33,7 @@ export default function SellerRegister() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase">
-            TOM PETERS
+            TOMPETERS
           </Link>
           <p className="text-sm text-tp-taupe mt-3 tracking-wider">Seller Account Registration</p>
         </div>
