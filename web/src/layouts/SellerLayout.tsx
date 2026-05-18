@@ -1,6 +1,6 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LayoutDashboard, Package, ShoppingCart, LogOut, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, User, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { logoutUser } from '../services/auth';
 
@@ -8,6 +8,7 @@ const navItems = [
   { to: '/seller', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { to: '/seller/products', label: 'Products', icon: Package },
   { to: '/seller/orders', label: 'Orders', icon: ShoppingCart },
+  { to: '/seller/account', label: 'Account', icon: User },
 ];
 
 export default function SellerLayout() {

@@ -205,6 +205,38 @@ export const updateInquiryStatus = async (
   });
 };
 
+export interface Review {
+  id?: string;
+  productId: string;
+  customerId: string;
+  customerName: string;
+  rating: number; // 1-5
+  comment: string;
+  createdAt?: any;
+}
+
+export const getProductReviews = async (productId: string): Promise<Review[]> => {
+  const q = query(
+    collection(db, 'reviews'),
+    where('productId', '==', productId),
+    orderBy('createdAt', 'desc')
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
+};
+
+export const addProductReview = async (review: Omit<Review, 'id' | 'createdAt'>): Promise<void> => {
+  await addDoc(collection(db, 'reviews'), { ...review, createdAt: serverTimestamp() });
+};
+
+export const getSellersByIds = async (sellerIds: string[]) => {
+  if (sellerIds.length === 0) return [];
+  const snap = await getDocs(query(collection(db, COLLECTIONS.USERS), where('role', '==', 'seller')));
+  return snap.docs
+    .map(d => d.data())
+    .filter(u => sellerIds.includes(u.uid));
+};
+
 export const getPlatformStats = async () => {
   const [customersSnap, sellersSnap, ordersSnap, productsSnap, inquiriesSnap] = await Promise.all([
     getDocs(query(collection(db, COLLECTIONS.USERS), where('role', '==', 'customer'), limit(1000))),
@@ -225,4 +257,28 @@ export const getPlatformStats = async () => {
     totalRevenue,
     pendingInquiries: inquiriesSnap.size,
   };
+};
+
+export interface Review {
+  id?: string;
+  productId: string;
+  customerId: string;
+  customerName: string;
+  rating: number;
+  comment: string;
+  createdAt?: any;
+}
+
+export const getProductReviews = async (productId: string): Promise<Review[]> => {
+  const q = query(
+    collection(db, 'reviews'),
+    where('productId', '==', productId),
+    orderBy('createdAt', 'desc')
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() } as Review));
+};
+
+export const addProductReview = async (review: Omit<Review, 'id' | 'createdAt'>): Promise<void> => {
+  await addDoc(collection(db, 'reviews'), { ...review, createdAt: serverTimestamp() });
 };
