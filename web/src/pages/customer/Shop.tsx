@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { getProducts, Product } from '../../services/firestore';
 
@@ -77,8 +78,14 @@ export default function Shop() {
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filtered.map(product => (
-            <Link key={product.id} to={`/shop/${product.id}`} className="group">
+          {filtered.map((product, i) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.05, ease: 'easeOut' }}
+            >
+            <Link to={`/shop/${product.id}`} className="group block">
               <div className="aspect-[3/4] bg-tp-silk rounded overflow-hidden mb-3 relative">
                 {product.images?.[0] ? (
                   <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -92,6 +99,7 @@ export default function Shop() {
               <h3 className="text-sm font-medium text-tp-charcoal group-hover:text-tp-gold transition-colors">{product.name}</h3>
               <p className="text-sm text-tp-taupe mt-0.5">${product.price.toFixed(2)}</p>
             </Link>
+            </motion.div>
           ))}
         </div>
       )}

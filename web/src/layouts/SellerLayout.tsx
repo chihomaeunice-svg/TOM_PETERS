@@ -1,4 +1,5 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { LayoutDashboard, Package, ShoppingCart, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { logoutUser } from '../services/auth';
@@ -70,7 +71,14 @@ export default function SellerLayout() {
       </aside>
 
       <main className="flex-1 ml-64 p-8 overflow-auto">
-        <Outlet />
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, x: 12 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+        >
+          <Outlet />
+        </motion.div>
       </main>
     </div>
   );

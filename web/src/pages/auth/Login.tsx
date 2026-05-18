@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { loginUser } from '../../services/auth';
 
 export default function Login() {
@@ -35,7 +36,13 @@ export default function Login() {
           <p className="text-sm text-tp-taupe mt-3 tracking-wider">Welcome back</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-tp-border rounded p-8 shadow-luxe space-y-5">
+        <motion.form
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-white border border-tp-border rounded p-8 shadow-luxe space-y-5"
+        >
           {error && (
             <div className="bg-tp-error/10 border border-tp-error/20 rounded px-4 py-3 text-sm text-tp-error">
               {error}
@@ -86,7 +93,7 @@ export default function Login() {
               Create one
             </Link>
           </p>
-        </form>
+        </motion.form>
       </div>
     </div>
   );
