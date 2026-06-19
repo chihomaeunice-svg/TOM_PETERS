@@ -28,7 +28,7 @@ export default function Checkout() {
     setLoading(true);
     try {
       const sellerId = items[0]?.sellerId || '';
-      await createOrder({
+      const docRef = await createOrder({
         customerId: profile.uid,
         customerEmail: profile.email,
         customerName: profile.displayName,
@@ -50,7 +50,7 @@ export default function Checkout() {
       emailOrderConfirmation({
         to: profile.email,
         customerName: profile.displayName,
-        orderId: Date.now().toString(),
+        orderId: docRef.id,
         items: items.map(i => ({ name: i.name, size: i.size, qty: i.qty, price: i.price })),
         total,
       });

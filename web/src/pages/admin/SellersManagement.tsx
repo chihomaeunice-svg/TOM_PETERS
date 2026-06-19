@@ -62,25 +62,24 @@ export default function AdminSellers() {
   const handleInquiry = async (id: string, status: 'approved' | 'rejected') => {
     if (!profile) return;
     setUpdating(id);
-    const inq = inquiries.find(i => i.id === id);
-    await updateInquiryStatus(id, status, profile.uid);
-    if (inq) {
-      await emailApplicationDecision({
-        to: inq.email,
-        name: inq.name,
-        businessName: inq.businessName,
-        decision: status,
-      });
+    try {
+      const inq = inquiries.find(i => i.id === id);
+      await updateInquiryStatus(id, status, profile.uid);
+      if (inq) emailApplicationDecision({ to: inq.email, name: inq.name, businessName: inq.businessName, decision: status });
+    } finally {
+      setUpdating(null);
+      load();
     }
-    setUpdating(null);
-    load();
   };
 
   const handleSellerStatus = async (uid: string, newStatus: 'active' | 'suspended') => {
     setUpdating(uid);
-    await updateDoc(doc(db, COLLECTIONS.USERS, uid), { status: newStatus });
-    setUpdating(null);
-    load();
+    try {
+      await updateDoc(doc(db, COLLECTIONS.USERS, uid), { status: newStatus });
+    } finally {
+      setUpdating(null);
+      load();
+    }
   };
 
   return (

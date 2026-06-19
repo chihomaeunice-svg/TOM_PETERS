@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
-import { ArrowRight, Star, Shield, Sparkles, Store, Package, Users, Award } from 'lucide-react';
+import { ArrowRight, Star, Shield, Sparkles, Store } from 'lucide-react';
 import { GLSLHills } from '@/components/ui/glsl-hills';
 
 const fadeUp = (delay = 0) => ({
@@ -38,13 +38,6 @@ const MARQUEE_ITEMS = [
   'PREMIUM QUALITY', 'CURATED BRANDS', 'TIMELESS STYLE', 'CRAFTED TO LAST',
   'HAND APPROVED', 'LUXURY FABRICS', 'PREMIUM QUALITY', 'CURATED BRANDS',
   'TIMELESS STYLE', 'CRAFTED TO LAST', 'HAND APPROVED', 'LUXURY FABRICS',
-];
-
-const STATS = [
-  { icon: Package, value: '500+', label: 'Products' },
-  { icon: Users, value: '50+', label: 'Curated Brands' },
-  { icon: Award, value: '100%', label: 'Quality Approved' },
-  { icon: Star, value: '4.9', label: 'Avg. Rating' },
 ];
 
 export default function Home() {
@@ -103,28 +96,6 @@ export default function Home() {
           ))}
         </motion.div>
       </div>
-
-      {/* ── Stats bar ─────────────────────────────────────────────────── */}
-      <Section>
-        <div className="border-b border-tp-border bg-white">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4">
-            {STATS.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="flex flex-col items-center justify-center py-8 px-4 border-r border-b md:border-b-0 border-tp-border last:border-r-0"
-              >
-                <s.icon size={18} className="text-tp-gold mb-2" />
-                <span className="font-display text-2xl text-tp-charcoal">{s.value}</span>
-                <span className="text-[10px] tracking-[0.2em] uppercase text-tp-taupe mt-1">{s.label}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </Section>
 
       {/* ── Categories ────────────────────────────────────────────────── */}
       <section className="py-24 px-4 max-w-7xl mx-auto">

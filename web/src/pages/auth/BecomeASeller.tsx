@@ -19,7 +19,7 @@ export default function BecomeASeller() {
     setLoading(true);
     try {
       await submitSellerInquiry(form as any);
-      await emailNewInquiry(form as any);
+      emailNewInquiry(form as any);
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message || 'Submission failed. Please try again.');
