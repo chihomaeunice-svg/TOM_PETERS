@@ -57,14 +57,13 @@ export default function ResetPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase">
-            TOMPETERS
+            PECARE
           </Link>
           <p className="text-sm text-tp-taupe mt-3 tracking-wider">Set new password</p>
         </div>
 
         <div className="bg-white border border-tp-border rounded p-8 shadow-luxe">
 
-          {/* Verifying */}
           {stage === 'verifying' && (
             <div className="flex flex-col items-center gap-4 py-6">
               <Loader2 size={28} className="text-tp-gold animate-spin" />
@@ -72,7 +71,6 @@ export default function ResetPassword() {
             </div>
           )}
 
-          {/* Invalid / expired */}
           {stage === 'invalid' && (
             <div className="text-center space-y-4 py-4">
               <XCircle size={40} className="text-tp-error mx-auto" />
@@ -92,7 +90,6 @@ export default function ResetPassword() {
             </div>
           )}
 
-          {/* Password form */}
           {stage === 'form' && (
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
@@ -122,7 +119,6 @@ export default function ResetPassword() {
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {/* Strength bar */}
                 {password.length > 0 && (
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex gap-1 flex-1">
@@ -161,7 +157,6 @@ export default function ResetPassword() {
             </form>
           )}
 
-          {/* Success */}
           {stage === 'success' && (
             <div className="text-center space-y-4 py-4">
               <CheckCircle2 size={40} className="text-tp-success mx-auto" />

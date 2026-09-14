@@ -32,7 +32,7 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link to="/" className="font-display text-3xl tracking-[0.15em] text-tp-charcoal uppercase">
-            TOMPETERS
+            PECARE
           </Link>
           <p className="text-sm text-tp-taupe mt-3 tracking-wider">Reset your password</p>
         </div>

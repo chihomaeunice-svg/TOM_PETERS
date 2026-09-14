@@ -4,15 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        'tp-cream': '#FAF8F5',
-        'tp-silk': '#F0EBE3',
-        'tp-beige': '#E8E0D5',
-        'tp-tan': '#D4B896',
-        'tp-gold': '#C9A96E',
-        'tp-gold-dark': '#A8833A',
-        'tp-taupe': '#8C7B6B',
-        'tp-charcoal': '#1C1C1E',
-        'tp-border': '#E0D8CE',
+        'tp-cream': '#F9F6F2',
+        'tp-silk': '#F0E9E1',
+        'tp-beige': '#E4DCD3',
+        'tp-tan': '#C8B09A',
+        'tp-gold': '#B98E6A',
+        'tp-gold-dark': '#8F6843',
+        'tp-taupe': '#7A6A5A',
+        'tp-charcoal': '#111214',
+        'tp-border': '#DDD5CC',
         'tp-success': '#27AE60',
         'tp-warning': '#E67E22',
         'tp-error': '#C0392B',
@@ -20,7 +20,7 @@ export default {
         'tp-rose': '#D4A5A5',
       },
       fontFamily: {
-        display: ['Georgia', 'Times New Roman', 'serif'],
+        display: ['"Playfair Display"', 'Georgia', 'serif'],
         sans: [
           '-apple-system',
           'BlinkMacSystemFont',

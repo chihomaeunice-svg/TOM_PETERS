@@ -35,12 +35,10 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
 
-  // Profile tab state
   const [displayName, setDisplayName] = useState(profile?.displayName || '');
   const [phone, setPhone] = useState((profile as any)?.phone || '');
   const [bio, setBio] = useState((profile as any)?.bio || '');
 
-  // Address tab state
   const addr = (profile as any)?.address || {};
   const [line1, setLine1] = useState(addr.line1 || '');
   const [line2, setLine2] = useState(addr.line2 || '');
@@ -49,7 +47,6 @@ export default function Profile() {
   const [zip, setZip] = useState(addr.zip || '');
   const [country, setCountry] = useState(addr.country || '');
 
-  // Notifications state
   const notifs = (profile as any)?.notifications || {};
   const [emailOrders, setEmailOrders] = useState(notifs.emailOrders ?? true);
   const [emailPromos, setEmailPromos] = useState(notifs.emailPromos ?? false);
@@ -98,7 +95,6 @@ export default function Profile() {
     <div className="max-w-4xl mx-auto px-4 py-12">
       <BackButton label="Back to Shop" to="/shop" />
 
-      {/* Header */}
       <div className="flex items-center gap-6 mb-10">
         <div className="w-16 h-16 rounded-full bg-tp-charcoal flex items-center justify-center flex-shrink-0">
           <span className="font-display text-xl text-tp-gold tracking-widest">{initials}</span>
@@ -113,7 +109,6 @@ export default function Profile() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        {/* Sidebar tabs */}
         <aside className="md:col-span-1">
           <nav className="bg-white border border-tp-border rounded shadow-luxe overflow-hidden">
             {TABS.map(t => (
@@ -143,7 +138,6 @@ export default function Profile() {
           </nav>
         </aside>
 
-        {/* Content panel */}
         <div className="md:col-span-3">
           <AnimatePresence mode="wait">
             <motion.div
@@ -160,7 +154,6 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* ── Personal Info ──────────────────────────────── */}
               {tab === 'profile' && (
                 <form onSubmit={handleProfile} className="space-y-6">
                   <SectionHeader title="Personal Information" desc="Update your name, phone, and a short bio." />
@@ -184,7 +177,6 @@ export default function Profile() {
                 </form>
               )}
 
-              {/* ── Shipping Address ───────────────────────────── */}
               {tab === 'address' && (
                 <form onSubmit={handleAddress} className="space-y-6">
                   <SectionHeader title="Shipping Address" desc="Your default address for orders." />
@@ -220,7 +212,6 @@ export default function Profile() {
                 </form>
               )}
 
-              {/* ── Notifications ──────────────────────────────── */}
               {tab === 'notifications' && (
                 <form onSubmit={handleNotifications} className="space-y-6">
                   <SectionHeader title="Notification Preferences" desc="Choose what emails you'd like to receive." />
@@ -249,7 +240,6 @@ export default function Profile() {
                 </form>
               )}
 
-              {/* ── Security ──────────────────────────────────── */}
               {tab === 'security' && (
                 <div className="space-y-6">
                   <SectionHeader title="Security" desc="Manage your account security settings." />
@@ -281,7 +271,7 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="pt-4 border-t border-tp-border">
-                    <p className="text-xs text-tp-taupe mb-3">To permanently delete your account, contact us at support@tompeters.com.</p>
+                    <p className="text-xs text-tp-taupe mb-3">To permanently delete your account, contact us at support@pecare.com.</p>
                   </div>
                 </div>
               )}
