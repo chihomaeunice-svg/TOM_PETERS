@@ -1,6 +1,6 @@
 const API_KEY = import.meta.env.VITE_RESEND_API_KEY as string;
 const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL as string) || 'chihomaeunice@gmail.com';
-const FROM = 'TOMPETERS <onboarding@resend.dev>';
+const FROM = 'PECARE <onboarding@resend.dev>';
 
 async function send(payload: {
   to: string | string[];
@@ -39,7 +39,7 @@ export const emailNewInquiry = (data: {
     subject: `New Seller Inquiry — ${data.businessName}`,
     html: `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;background:#faf9f7;padding:40px 32px;border:1px solid #e8e0d4;">
-        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">TOMPETERS</h1>
+        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">PECARE</h1>
         <p style="font-size:11px;color:#8c7b6b;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px;">New Seller Application</p>
         <hr style="border:none;border-top:1px solid #e8e0d4;margin-bottom:32px;" />
         <table style="width:100%;border-collapse:collapse;font-size:14px;color:#3a3530;">
@@ -58,7 +58,7 @@ export const emailNewInquiry = (data: {
             Review in Admin Panel
           </a>
         </div>
-        <p style="margin-top:32px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Tompeters. All rights reserved.</p>
+        <p style="margin-top:32px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Pecare. All rights reserved.</p>
       </div>
     `,
   });
@@ -72,10 +72,10 @@ export const emailApplicationDecision = (data: {
   const approved = data.decision === 'approved';
   return send({
     to: data.to,
-    subject: `Your Tompeters Application — ${approved ? 'Approved ✓' : 'Update'}`,
+    subject: `Your Pecare Application — ${approved ? 'Approved ✓' : 'Update'}`,
     html: `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;background:#faf9f7;padding:40px 32px;border:1px solid #e8e0d4;">
-        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">TOMPETERS</h1>
+        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">PECARE</h1>
         <p style="font-size:11px;color:#8c7b6b;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px;">Seller Application Update</p>
         <hr style="border:none;border-top:1px solid #e8e0d4;margin-bottom:32px;" />
         <p style="font-size:15px;color:#3a3530;">Hi <strong>${data.name}</strong>,</p>
@@ -83,7 +83,7 @@ export const emailApplicationDecision = (data: {
           <div style="background:#f0faf4;border-left:3px solid #2d7a4f;padding:16px 20px;margin:20px 0;border-radius:2px;">
             <p style="font-size:15px;color:#1a1a1a;margin:0 0 8px;font-weight:600;">🎉 Your application has been approved!</p>
             <p style="font-size:14px;color:#3a3530;margin:0;line-height:1.6;">
-              Welcome to Tompeters, <strong>${data.businessName}</strong>. Your seller account is now active. Sign in to your seller dashboard to start listing your products.
+              Welcome to Pecare, <strong>${data.businessName}</strong>. Your seller account is now active. Sign in to your seller dashboard to start listing your products.
             </p>
           </div>
           <div style="margin-top:28px;text-align:center;">
@@ -95,14 +95,14 @@ export const emailApplicationDecision = (data: {
           <div style="background:#fdf5f5;border-left:3px solid #c0392b;padding:16px 20px;margin:20px 0;border-radius:2px;">
             <p style="font-size:15px;color:#1a1a1a;margin:0 0 8px;font-weight:600;">Application not approved</p>
             <p style="font-size:14px;color:#3a3530;margin:0;line-height:1.6;">
-              Thank you for your interest in Tompeters. After careful review, we are unable to approve the application for <strong>${data.businessName}</strong> at this time. You are welcome to reapply in the future.
+              Thank you for your interest in Pecare. After careful review, we are unable to approve the application for <strong>${data.businessName}</strong> at this time. You are welcome to reapply in the future.
             </p>
           </div>
           <p style="font-size:14px;color:#8c7b6b;line-height:1.6;">
             If you have any questions, please reach out to us at <a href="mailto:chihomaeunice@gmail.com" style="color:#c9a96e;">chihomaeunice@gmail.com</a>.
           </p>
         `}
-        <p style="margin-top:40px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Tompeters. All rights reserved.</p>
+        <p style="margin-top:40px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Pecare. All rights reserved.</p>
       </div>
     `,
   });
@@ -120,7 +120,7 @@ export const emailOrderConfirmation = (data: {
     subject: `Order Confirmed — #${data.orderId.slice(-8).toUpperCase()}`,
     html: `
       <div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;background:#faf9f7;padding:40px 32px;border:1px solid #e8e0d4;">
-        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">TOMPETERS</h1>
+        <h1 style="font-size:22px;color:#1a1a1a;margin:0 0 4px;letter-spacing:2px;text-transform:uppercase;">PECARE</h1>
         <p style="font-size:11px;color:#8c7b6b;letter-spacing:3px;text-transform:uppercase;margin:0 0 32px;">Order Confirmation</p>
         <hr style="border:none;border-top:1px solid #e8e0d4;margin-bottom:32px;" />
         <p style="font-size:15px;color:#3a3530;">Hi <strong>${data.customerName}</strong>, thank you for your order.</p>
@@ -156,7 +156,7 @@ export const emailOrderConfirmation = (data: {
             Track Your Order
           </a>
         </div>
-        <p style="margin-top:32px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Tompeters. All rights reserved.</p>
+        <p style="margin-top:32px;font-size:11px;color:#b0a090;text-align:center;">© ${new Date().getFullYear()} Pecare. All rights reserved.</p>
       </div>
     `,
   });
